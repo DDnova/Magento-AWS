@@ -10,11 +10,11 @@ Before starting the installation process, make sure you have the following:
 ## Step 1: Update the system and create a Swap File
  Connect to your EC2 instance using SSH.
  Update the package list and upgrade existing packages:
-   ```
+   ```bash
     sudo apt update && sudo apt upgrade
    ```
  Create a Swap File as t2.micro instances often have limited RAM:
-   ```
+   ```bash
    sudo fallocate -l 5G /swapfile
    sudo chmod 600 /swapfile
    sudo mkswap /swapfile
@@ -23,24 +23,24 @@ Before starting the installation process, make sure you have the following:
 
 ## Step 2: Install Nginx
  Install Nginx:
-   ```
+   ```bash
    sudo apt install nginx-full
    ```
 
 ## Step 3: Install PHP and MySQL
  Install PHP and required PHP extensions for Magento:
-   ```
+   ```bash
    sudo apt install php php-{bcmath,intl,mbstring,mysql,soap,xml,xsl,zip,cli,common,curl,fpm,gd}
    ```
 
  Install MySQL Server 8.0:
-   ```
+   ```bash
    sudo apt install mysql-server-8.0
    ```
 
 ## Step 4: Install Elasticsearch and Redis
  Install Elasticsearch for Magento's search functionality:
-   ```
+   ```bash
    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
    echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
    sudo apt update
@@ -50,7 +50,7 @@ Before starting the installation process, make sure you have the following:
    ```
 
  Install Redis as a caching backend:
-   ```
+   ```bash
    curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
    echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
    sudo apt update
@@ -58,7 +58,7 @@ Before starting the installation process, make sure you have the following:
    ```
 
     Configure Redis as the session and cache backend for improved performance:
-    ```
+    ```bash
     sudo php bin/magento setup:store-config:set --session-save=redis --session-save-redis-db=0 \
     --session-save-redis-password=YOUR_REDIS_PASSWORD --cache-backend=redis \
     --cache-backend-redis-db=2 --cache-backend-redis-password=YOUR_REDIS_PASSWORD \
@@ -69,27 +69,27 @@ Before starting the installation process, make sure you have the following:
 
  Install Composer (if not already installed):
  
-   ```
+   ```bash
     sudo apt-get install apt-transport-https curl
     sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
    ```
 
 Create Magento directory and set appropriate permissions:
  
-    ```
+    ```bash
     sudo mkdir -p /var/www/html/magento/
     sudo chown www-data:www-data /var/www/html/ -R
     ```
 
 Change to the Magento directory:
  
-    ```
+    ```bash
     cd /var/www/html/
     ```
     
  Download and install Magento using Composer:
  
-    ```
+    ```bash
     sudo -u www-data composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento
     ```
     
@@ -97,36 +97,36 @@ Change to the Magento directory:
    Install OpenSSL (if not already installed):
    ```
    sudo apt-get install openssl
-   ```
+   ```bash
 
    Generate a self-signed SSL certificate and private key:
-   ```
+   ```bash
    sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx.key -out /etc/ssl/certs/nginx.crt
    ```
 
    Generate a Diffie-Hellman parameter for enhanced security:
-   ```
+   ```bash
    sudo openssl dhparam -out /etc/nginx/dhparam.pem 2048
    ```
 
    Create a configuration file for self-signed certificates:
-   ```
+   ```bash
    sudo nano /etc/nginx/snippets/self-signed.conf
    ```
 
 ## Step 7: Configure Nginx
  Remove the default Nginx configuration:
-    ```
+    ```bash
     sudo rm /etc/nginx/sites-enabled/default
     ```
 
  Create a new Nginx configuration for Magento:
-    ```
+    ```bash
     sudo mv /var/www/html/magento/nginx.conf.sample /etc/nginx/conf.d/magento.sample
     ```
 
  Edit the Nginx configuration file:
-    ```
+    ```bash
     sudo nano /etc/nginx/conf.d/magento.conf
     ```
 
@@ -157,12 +157,12 @@ Change to the Magento directory:
          }
       ```
  Test the Nginx configuration for any syntax errors:
-    ```
+    ```bash
     sudo nginx -t
     ```
 
  Restart Nginx to apply the changes:
-    ```
+    ```bash
     sudo service nginx restart
     ```
 
@@ -180,7 +180,7 @@ Change to the Magento directory:
     ```
 
  Set the correct ownership and permissions for Magento files:
-    ```
+    ```bash
     sudo chown -R www-data:www-data .
     ```
 
@@ -191,12 +191,12 @@ For the 503 error you need to check the permissions and ownership of the files a
 If the files are automatically downloading it means the php fpm is not configured correctly
 
  Set the Magento deployment mode to "developer":
-    ```
+    ```bash
     sudo php bin/magento deploy:mode:set developer
     ```
 
  Flush the Magento cache:
-    ```
+    ```bash
     sudo php bin/magento cache:flush
     ``` 
 
