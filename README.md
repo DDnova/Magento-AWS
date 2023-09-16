@@ -207,11 +207,11 @@ sudo service nginx restart
 
 Configure Magento with your specific settings using the following commands:
 
-```jsx
+```bash
 cd /var/www/html/magento/ 
 ```
 
-```jsx
+```bash
 sudo php bin/magento setup:install --base-url=http://YOUR_DOMAIN_OR_IP \\     --db-host=localhost --db-name=YOUR_DB_NAME --db-user=YOUR_DB_USER --db-password=YOUR_DB_PASSWORD \\     --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com \\     --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD \\     --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 \\     --elasticsearch-host=http://localhost --elasticsearch-port=9200 \\     --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-enable-auth=0
 ```
 
