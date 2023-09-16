@@ -106,69 +106,29 @@ Before starting the installation process, make sure you have the following:
 
 16. Add the following content to the file:
       ```
-      nginx
-      Copy code
-      server {
-          listen 80;
-          server_name YOUR_DOMAIN_OR_IP;
-          root /var/www/html/magento/pub;
-      
-          index index.php;
-          autoindex off;
-          charset UTF-8;
-          error_page 404 403 = /errors/404.php;
-          # ...
-          # Other Nginx configuration directives specific to your setup
-          # ...
-      
-          location / {
-              try_files $uri $uri/ /index.php?$args;
-          }
-      
-          location /pub/ {
-              location ~ ^/pub/media/(downloadable|customer|import|theme_customization/.*\.xml) {
-                  deny all;
-              }
-              alias /var/www/html/magento/pub/;
-              add_header X-Frame-Options "SAMEORIGIN";
-          }
-      
-          location /static/ {
-              # ...
-              # Static content caching directives (optional)
-              # ...
-          }
-      
-          location /media/ {
-              # ...
-              # Media files caching directives (optional)
-              # ...
-          }
-      
-          location ~ ^/index\.php {
-              fastcgi_pass unix:/run/php/php8.1-fpm.sock;  # Change version if different
-              fastcgi_index index.php;
-              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-              include fastcgi_params;
-          }
-      
-          location ~ (index|get|static|report|404|503|health_check)\.php$ {
-              fastcgi_pass unix:/run/php/php8.1-fpm.sock;  # Change version if different
-              fastcgi_index index.php;
-              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-              include fastcgi_params;
-          }
-      
-          location ~* \.(ico|jpg|jpeg|png|gif|svg|js|css|swf|eot|ttf|otf|woff|woff2)$ {
-              expires 1y;
-              add_header Cache-Control "public";
-          }
-      
-          location ~* \.(zip|gz|gzip|bz2|csv|xml)$ {
-              expires 1h;
-              add_header Cache-Control "no-store";
-          }
-      }
+    upstream fastcgi_backend {
+            server unix:/var/run/php/php8.1-fpm.sock;
+         }
+         server {
+                 listen 8080;
+         #        listen [::]:80;
+                 server_name test.mgt.com;
+                 return 302 https://$server_name$request_uri;
+         }
+         server {
+           listen 443 ssl;
+         #  listen [::]:443 ssl;
+         #  server_name localhost;
+           include snippets/self-signed.conf;
+           include snippets/phpmyadmin.conf;
+         
+           set $MAGE_ROOT /var/www/html/magento/;
+           include /etc/nginx/conf.d/magento.sample;
+           client_max_body_size 2M;
+         
+           access_log /var/log/nginx/magento.access;
+           error_log /var/log/nginx/magento.error;
+         }
       ```
 17. Test the Nginx configuration for any syntax errors:
     ```
