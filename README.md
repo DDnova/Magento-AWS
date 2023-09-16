@@ -11,7 +11,7 @@ Before starting the installation process, make sure you have the following:
  Connect to your EC2 instance using SSH.
  Update the package list and upgrade existing packages:
    ```
-   sudo apt update && sudo apt upgrade
+    sudo apt update && sudo apt upgrade
    ```
  Create a Swap File as t2.micro instances often have limited RAM:
    ```
@@ -66,26 +66,33 @@ Before starting the installation process, make sure you have the following:
     ```
 
 ## Step 5: Install Magento
+
  Install Composer (if not already installed):
+ 
    ```
-   sudo apt-get install apt-transport-https curl
-   sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    sudo apt-get install apt-transport-https curl
+    sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
    ```
 
- Create Magento directory and set appropriate permissions:
+Create Magento directory and set appropriate permissions:
+ 
     ```
     sudo mkdir -p /var/www/html/magento/
     sudo chown www-data:www-data /var/www/html/ -R
     ```
 
- Change to the Magento directory:
+Change to the Magento directory:
+ 
     ```
     cd /var/www/html/
     ```
+    
  Download and install Magento using Composer:
+ 
     ```
     sudo -u www-data composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento
     ```
+    
 ## Step 6: Configure SSL with a Self-Signed Certificate
    Install OpenSSL (if not already installed):
    ```
