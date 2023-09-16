@@ -10,54 +10,54 @@ Before starting the installation process, make sure you have the following:
 ## Step 1: Update the system and create a Swap File
  Connect to your EC2 instance using SSH.
  Update the package list and upgrade existing packages:
-   ```bash
+    ```bash
     sudo apt update && sudo apt upgrade
-   ```
+    ```
  Create a Swap File as t2.micro instances often have limited RAM:
-   ```bash
+    ```bash
    sudo fallocate -l 5G /swapfile
    sudo chmod 600 /swapfile
    sudo mkswap /swapfile
    sudo swapon /swapfile
-   ```
+    ```
 
 ## Step 2: Install Nginx
  Install Nginx:
-   ```bash
+    ```bash
    sudo apt install nginx-full
-   ```
+    ```
 
 ## Step 3: Install PHP and MySQL
  Install PHP and required PHP extensions for Magento:
-   ```bash
+    ```bash
    sudo apt install php php-{bcmath,intl,mbstring,mysql,soap,xml,xsl,zip,cli,common,curl,fpm,gd}
-   ```
+    ```
 
  Install MySQL Server 8.0:
-   ```bash
+    ```bash
    sudo apt install mysql-server-8.0
-   ```
+    ```
 
 ## Step 4: Install Elasticsearch and Redis
  Install Elasticsearch for Magento's search functionality:
-   ```bash
+    ```bash
    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
    echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
    sudo apt update
    sudo apt install elasticsearch
    sudo systemctl daemon-reload
    sudo systemctl start elasticsearch.service
-   ```
+    ```
 
  Install Redis as a caching backend:
-   ```bash
+    ```bash
    curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
    echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
    sudo apt update
    sudo apt install redis
-   ```
+    ```
 
-    Configure Redis as the session and cache backend for improved performance:
+ Configure Redis as the session and cache backend for improved performance:
     ```bash
     sudo php bin/magento setup:store-config:set --session-save=redis --session-save-redis-db=0 \
     --session-save-redis-password=YOUR_REDIS_PASSWORD --cache-backend=redis \
@@ -69,10 +69,10 @@ Before starting the installation process, make sure you have the following:
 
  Install Composer (if not already installed):
  
-   ```bash
+    ```bash
     sudo apt-get install apt-transport-https curl
     sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-   ```
+    ```
 
 Create Magento directory and set appropriate permissions:
  
@@ -105,14 +105,14 @@ Change to the Magento directory:
    ```
 
    Generate a Diffie-Hellman parameter for enhanced security:
-   ```bash
+    ```bash
    sudo openssl dhparam -out /etc/nginx/dhparam.pem 2048
-   ```
+    ```
 
    Create a configuration file for self-signed certificates:
-   ```bash
+    ```bash
    sudo nano /etc/nginx/snippets/self-signed.conf
-   ```
+    ```
 
 ## Step 7: Configure Nginx
  Remove the default Nginx configuration:
